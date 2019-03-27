@@ -34,23 +34,11 @@ class Seats extends Component {
 	}
 	//return the unique letters for all seats in a particular cabin class
 	firstClassAlpha(sarray, cabinclass) {
-		let alpha1 = [],
-		alpha2 = [];
+		const alpha1 = sarray.filter(seats => seats.class === cabinclass).map(seats => seats.seat);			
 
-		sarray.filter(seats => {
-			if (seats.class === cabinclass) {
-				alpha1.push(seats.seat);
-			}
-		});
-		
-		alpha1.sort().filter((value, index, self) => {
-			if (self.indexOf(value) === index){
-				alpha2.push(value);
-			}
-		});
+		const alpha2 = alpha1.sort().filter((value, index, self) => self.indexOf(value) === index);			
 
-		return alpha2;		
-
+		return alpha2;	
 	}
 
 	//used to find the missing letters for seats to determine where the isle is when you compare this list to the seat letters
@@ -59,6 +47,9 @@ class Seats extends Component {
 		start = alpha.indexOf(arr[0]),
 		end = alpha.indexOf(arr[arr.length-1]),
 		sliced = alpha.slice(start, end + 1);
+
+		console.log(arr[0]);
+		console.log(arr[arr.length-1]);
 
 		return sliced;
 	}
@@ -69,12 +60,10 @@ class Seats extends Component {
 
 		let containWidth = seatLettersFull.length * (30 + 10);
 
-		const build = sarray.map((lola) => {
-			if (lola.class === cabinclass) {
+		const build = sarray.filter(lola => lola.class === cabinclass).map((lola) => {			
 				return(
-					<div className="lolaSeats" key={lola.seat+lola.row} id={lola.seat+lola.row+lola.occupied} data-color={(lola.occupied === true) ? "blue" : "grey"} onClick={(lola.occupied === true) ? '' : this.seatSelect.bind(this, lola.seat+lola.row)} style={{backgroundColor: this.selectColor(lola.seat+lola.row)}}></div>
-				);
-			}
+					<div className="lolaSeats" key={lola.seat+lola.row} id={lola.seat+lola.row} data-color={(lola.occupied === true) ? "blue" : "grey"} onClick={this.seatSelect.bind(this, lola.seat+lola.row)} style={(lola.occupied === true) ? {backgroundColor: '#1b60e8'} : {backgroundColor: this.selectColor(lola.seat+lola.row)}}></div>
+				);			
 		});		
 		
 		//return seatLetters;
@@ -88,10 +77,7 @@ class Seats extends Component {
 	}
 
 	render(){		
-
-		console.log(this.firstClassAlpha(this.state.seatInfo, 'First'));
-		console.log(this.fillAlpha(this.firstClassAlpha(this.state.seatInfo, 'First')));
-		//console.log(this.seatPop(this.state.seatInfo, 'First'));		
+		console.log(this.fillAlpha(this.firstClassAlpha(this.state.seatInfo, 'First')));			
 
 		return(
 			<div className="lolaSeatsContainer" key="lSeats1" id="lSeats1Cont">
