@@ -23,6 +23,7 @@ code {
   width: 30px;
   height: 30px;
   margin: 5px;
+  text-align: center;
   cursor: pointer;
 }
 .lolaSeats[data-color=blue] {

@@ -6,7 +6,7 @@ class Seats extends Component {
 
 	    this.state = {  
 	    	seatInfo: [],  	
-	    	clickState: null,
+	    	clickState: null,	    	
 	    	dataRoute: 'https://s3.amazonaws.com/frontend-candidate-homework.lola.co/seats.json'
 	    }	    
   	}
@@ -47,28 +47,79 @@ class Seats extends Component {
 		end = alpha.indexOf(arr[arr.length-1]),
 		sliced = alpha.slice(start, end + 1);
 
-		console.log(arr[0]);
-		console.log(arr[arr.length-1]);
+		//console.log(arr[0]);
+		//console.log(arr[arr.length-1]);
 
 		return sliced;
 	}
 
+	missingletter(str) {
+		let missing = [], nums = str.map(function(letter){
+			return letter.charCodeAt();
+		})
+
+		for(var i=0; i<nums.length; i++){
+			if(nums[i+1] - nums[i] >1){
+			  missing.push(String.fromCharCode(nums[i]+1))
+			}
+		}
+		return missing
+	}
+
 	seatPop(sarray, cabinclass) {
 		const seatLetters = this.firstClassAlpha(sarray, cabinclass),
+		seatLettersMissing = this.missingletter(seatLetters),
 		seatLettersFull = this.fillAlpha(seatLetters);
 
-		let containWidth = seatLettersFull.length * (30 + 10);
+		let containWidth = seatLettersFull.length * (30 + 10),
+		topLetter = [];		
 
-		const build = sarray.filter(lola => lola.class === cabinclass).map((lola) => {			
+		for (let i = 0; i < seatLettersFull.length; i++){
+			for (let t = 0; t < seatLettersMissing.length; t++){				
+				if (seatLettersFull[i] === seatLettersMissing[t]){
+					topLetter.push("space");
+				}else{
+					topLetter.push(seatLettersFull[i]);
+				}
+			}
+		}			
+
+		topLetter = topLetter.filter((value, index, self) => (value !== "space") ? self.indexOf(value) === index : value);		
+
+		for (let p = 0; p < topLetter.length; p++) {
+			for (let t = 0; t < seatLettersMissing.length; t++){
+				if (topLetter[p] === seatLettersMissing[t]){
+					topLetter.splice(p, 1);
+				}
+			}
+		}
+
+
+		const TopRow = topLetter.map((val, index) => {					
+			if (val !== "space"){
+				return(
+					<div className="lolaSeats" key={val+index}>{val}</div>
+				);
+				
+			}else{
+				return(
+					<div className="lolaSeats" key={val+index}></div>
+				);
+				
+			}			
+		});
+
+		const build = sarray.filter(lola => lola.class === cabinclass).map(lola => {			
 				return(
 					<div className="lolaSeats" key={lola.seat+lola.row} id={lola.seat+lola.row} data-color={(lola.occupied === true) ? "blue" : "grey"} onClick={this.seatSelect.bind(this, lola.seat+lola.row)} style={(lola.occupied === true) ? {backgroundColor: '#1b60e8'} : {backgroundColor: this.selectColor(lola.seat+lola.row)}}></div>
 				);			
-		});	 	
+		});	
 		
-		//return seatLetters;
+
 		return (
 			<React.Fragment>
 				<div className="lolaContained" style={{width: containWidth+"px"}}>		
+				{TopRow}
 				{build}
 				</div>
 			</React.Fragment>
@@ -76,7 +127,7 @@ class Seats extends Component {
 	}
 
 	render(){		
-		console.log(this.fillAlpha(this.firstClassAlpha(this.state.seatInfo, 'First')));			
+		console.log(this.missingletter(this.firstClassAlpha(this.state.seatInfo, 'First')));			
 
 		return(
 			<div className="lolaSeatsContainer" key="lSeats1" id="lSeats1Cont">
