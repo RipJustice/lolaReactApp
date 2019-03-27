@@ -63,7 +63,7 @@ class Seats extends Component {
 				return(
 					<div className="lolaSeats" key={lola.seat+lola.row} id={lola.seat+lola.row} data-color={(lola.occupied === true) ? "blue" : "grey"} onClick={this.seatSelect.bind(this, lola.seat+lola.row)} style={(lola.occupied === true) ? {backgroundColor: '#1b60e8'} : {backgroundColor: this.selectColor(lola.seat+lola.row)}}></div>
 				);			
-		});		
+		});	 	
 		
 		//return seatLetters;
 		return (
