@@ -45,10 +45,7 @@ class Seats extends Component {
 		const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
 		start = alpha.indexOf(arr[0]),
 		end = alpha.indexOf(arr[arr.length-1]),
-		sliced = alpha.slice(start, end + 1);
-
-		//console.log(arr[0]);
-		//console.log(arr[arr.length-1]);
+		sliced = alpha.slice(start, end + 1);		
 
 		return sliced;
 	}
@@ -126,9 +123,7 @@ class Seats extends Component {
 		);
 	}
 
-	render(){		
-		console.log(this.missingletter(this.firstClassAlpha(this.state.seatInfo, 'First')));			
-
+	render(){
 		return(
 			<div className="lolaSeatsContainer" key="lSeats1" id="lSeats1Cont">
 				<div className="lolaFirstClass lolaRow">
