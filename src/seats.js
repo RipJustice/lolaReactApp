@@ -6,8 +6,9 @@ class Seats extends Component {
 
 	    this.state = {  
 	    	seatInfo: [],  	
+	    	clickState: null,
 	    	dataRoute: 'https://s3.amazonaws.com/frontend-candidate-homework.lola.co/seats.json'
-	    }
+	    }	    
   	}
 
   	componentDidMount() {  		
@@ -18,6 +19,19 @@ class Seats extends Component {
 	    .then(seatInfo => this.setState({seatInfo: seatInfo.sort((a, b) => ((a.seat < b.seat) ? -1 : (a.seat > b.seat) ? 1 : 0) || a.row - b.row).sort((a,b) => a.row - b.row)}));
 	}	
 
+	seatSelect(index) {
+		this.setState({
+	      clickState: index
+	    });
+	}
+
+	selectColor(index) {
+		if(this.state.clickState === index){
+			return '#e83697';
+		}else{
+			return '';
+		}
+	}
 	//return the unique letters for all seats in a particular cabin class
 	firstClassAlpha(sarray, cabinclass) {
 		let alpha1 = [],
@@ -53,10 +67,12 @@ class Seats extends Component {
 		const seatLetters = this.firstClassAlpha(sarray, cabinclass);
 		const seatLettersFull = this.fillAlpha(seatLetters);
 
+		let containWidth = seatLettersFull.length * (30 + 10);
+
 		const build = sarray.map((lola) => {
 			if (lola.class === cabinclass) {
 				return(
-					<div className="lolaSeats" key={lola.seat+lola.row} id={lola.seat+lola.row+lola.occupied} style={(lola.occupied === true) ? {backgroundColor: "#1b60e8"} : {backgroundColor: "#dcdddf"}}></div>
+					<div className="lolaSeats" key={lola.seat+lola.row} id={lola.seat+lola.row+lola.occupied} data-color={(lola.occupied === true) ? "blue" : "grey"} onClick={(lola.occupied === true) ? '' : this.seatSelect.bind(this, lola.seat+lola.row)} style={{backgroundColor: this.selectColor(lola.seat+lola.row)}}></div>
 				);
 			}
 		});		
@@ -64,9 +80,9 @@ class Seats extends Component {
 		//return seatLetters;
 		return (
 			<React.Fragment>
-				{seatLetters}	
-				{seatLettersFull}		
+				<div className="lolaContained" style={{width: containWidth+"px"}}>		
 				{build}
+				</div>
 			</React.Fragment>
 		);
 	}
@@ -79,14 +95,14 @@ class Seats extends Component {
 
 		return(
 			<div className="lolaSeatsContainer" key="lSeats1" id="lSeats1Cont">
-				<div className="lolaFirstClass lolaContained">
+				<div className="lolaFirstClass lolaRow">
 					{this.seatPop(this.state.seatInfo, 'First')}
 				</div>
-				<div className="lolaBusClass lolaContained">
-					
+				<div className="lolaBusClass lolaRow">
+					{this.seatPop(this.state.seatInfo, 'Business')}					
 				</div>
-				<div className="lolaEcoClass lolaContained">
-
+				<div className="lolaEcoClass lolaRow">
+					{this.seatPop(this.state.seatInfo, 'Economy')}
 				</div>							
 			</div>
 		);
