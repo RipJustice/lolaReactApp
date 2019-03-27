@@ -34,9 +34,8 @@ class Seats extends Component {
 	}
 	//return the unique letters for all seats in a particular cabin class
 	firstClassAlpha(sarray, cabinclass) {
-		const alpha1 = sarray.filter(seats => seats.class === cabinclass).map(seats => seats.seat);			
-
-		const alpha2 = alpha1.sort().filter((value, index, self) => self.indexOf(value) === index);			
+		const alpha1 = sarray.filter(seats => seats.class === cabinclass).map(seats => seats.seat),
+		alpha2 = alpha1.sort().filter((value, index, self) => self.indexOf(value) === index);			
 
 		return alpha2;	
 	}
@@ -55,8 +54,8 @@ class Seats extends Component {
 	}
 
 	seatPop(sarray, cabinclass) {
-		const seatLetters = this.firstClassAlpha(sarray, cabinclass);
-		const seatLettersFull = this.fillAlpha(seatLetters);
+		const seatLetters = this.firstClassAlpha(sarray, cabinclass),
+		seatLettersFull = this.fillAlpha(seatLetters);
 
 		let containWidth = seatLettersFull.length * (30 + 10);
 
