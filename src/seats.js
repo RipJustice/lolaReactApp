@@ -19,12 +19,14 @@ class Seats extends Component {
 	    .then(seatInfo => this.setState({seatInfo: seatInfo.sort((a, b) => ((a.seat < b.seat) ? -1 : (a.seat > b.seat) ? 1 : 0) || a.row - b.row).sort((a,b) => a.row - b.row)}));
 	}	
 
+	//passing indexes in for the state value here
 	seatSelect(index) {
 		this.setState({
 	      clickState: index
 	    });
 	}
 
+	//using the index value passed to our state with the above method to control what element gets a color change on click
 	selectColor(index) {
 		if(this.state.clickState === index){
 			return '#e83697';
@@ -68,31 +70,20 @@ class Seats extends Component {
 		seatLettersMissing = this.missingletter(seatLetters),
 		seatLettersFull = this.fillAlpha(seatLetters);
 
-		let containWidth = seatLettersFull.length * (30 + 10),
-		topLetter = [];		
+		//sets width of container based on the length of the full alphabet slice array in combination with the width and margin of each seat's visual representation
+		let containWidth = seatLettersFull.length * (30 + 10);			
 
+		//Here we are looping through our full alphabet array against the seat letters that should be missing then modding our full alphabet array in preparation for using it to create our top column letters section
 		for (let i = 0; i < seatLettersFull.length; i++){
 			for (let t = 0; t < seatLettersMissing.length; t++){				
 				if (seatLettersFull[i] === seatLettersMissing[t]){
-					topLetter.push("space");
-				}else{
-					topLetter.push(seatLettersFull[i]);
-				}
-			}
-		}			
-
-		topLetter = topLetter.filter((value, index, self) => (value !== "space") ? self.indexOf(value) === index : value);		
-
-		for (let p = 0; p < topLetter.length; p++) {
-			for (let t = 0; t < seatLettersMissing.length; t++){
-				if (topLetter[p] === seatLettersMissing[t]){
-					topLetter.splice(p, 1);
-				}
-			}
+					seatLettersFull[i] = "space";
+				}			
+			}			
 		}
 
-
-		const TopRow = topLetter.map((val, index) => {					
+		//Here we take our modded full alphabet array to produce the html needed for our top column letters section
+		const TopRow = seatLettersFull.map((val, index) => {					
 			if (val !== "space"){
 				return(
 					<div className="lolaSeats" key={val+index}>{val}</div>
@@ -110,8 +101,7 @@ class Seats extends Component {
 				return(
 					<div className="lolaSeats" key={lola.seat+lola.row} id={lola.seat+lola.row} data-color={(lola.occupied === true) ? "blue" : "grey"} onClick={this.seatSelect.bind(this, lola.seat+lola.row)} style={(lola.occupied === true) ? {backgroundColor: '#1b60e8'} : {backgroundColor: this.selectColor(lola.seat+lola.row)}}></div>
 				);			
-		});	
-		
+		});			
 
 		return (
 			<React.Fragment>
