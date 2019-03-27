@@ -42,7 +42,7 @@ class Seats extends Component {
 		return alpha2;	
 	}
 
-	//used to find the missing letters for seats to determine where the isle is when you compare this list to the seat letters
+	//used to find the missing letters for seats to determine where the isle is when you compare this list to the seat letters - found on stack overflow and modded the output for this project
 	fillAlpha(arr) {
 		const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
 		start = alpha.indexOf(arr[0]),
@@ -52,12 +52,14 @@ class Seats extends Component {
 		return sliced;
 	}
 
-	missingletter(str) {
-		let missing = [], nums = str.map(function(letter){
+	//return the missing letters from an array only - found on stack overflow and slightly modded for this project
+	missingletter(arr) {
+		let missing = [], 
+		nums = arr.map(function(letter){
 			return letter.charCodeAt();
 		})
 
-		for(var i=0; i<nums.length; i++){
+		for(let i=0; i<nums.length; i++){
 			if(nums[i+1] - nums[i] >1){
 			  missing.push(String.fromCharCode(nums[i]+1))
 			}
