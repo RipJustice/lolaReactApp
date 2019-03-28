@@ -42,38 +42,42 @@ class Seats extends Component {
 		return alpha2;	
 	}
 
-	//used to find the missing letters for seats to determine where the isle is when you compare this list to the seat letters - found on stack overflow and modded the output for this project
+	//used to find the missing letters for seats to determine where the isle is when you compare this list to the seat letters
 	fillAlpha(arr) {
 		const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
 		start = alpha.indexOf(arr[0]),
 		end = alpha.indexOf(arr[arr.length-1]),
-		sliced = alpha.slice(start, end + 1);		
+		fullAlpha = alpha.slice(start, end + 1);		
 
-		return sliced;
+		return fullAlpha;
 	}
 
-	//return the missing letters from an array only - found on stack overflow and slightly modded for this project
-	missingletter(arr) {
+	//return the missing letters from an array only
+	missingLetters(arr) {
 		let missing = [], 
-		nums = arr.map(function(letter){
+		unicode = arr.map((letter) => {
 			return letter.charCodeAt();
-		})
+		});
 
-		for(let i=0; i<nums.length; i++){
-			if(nums[i+1] - nums[i] >1){
-			  missing.push(String.fromCharCode(nums[i]+1))
+		for(let i = 0; i < unicode.length; i++){
+			if(unicode[i + 1] - unicode[i] > 1){
+				missing.push(String.fromCharCode(unicode[i] + 1));
 			}
 		}
+
 		return missing
 	}
 
 	seatPop(sarray, cabinclass) {
 		const seatLetters = this.firstClassAlpha(sarray, cabinclass),
-		seatLettersMissing = this.missingletter(seatLetters),
-		seatLettersFull = this.fillAlpha(seatLetters);
+		seatLettersMissing = this.missingLetters(seatLetters),
+		//here we are taking the seats array and swapping all seat letters to unicode
+		lolaUnicode = sarray.filter(lola => lola.class === cabinclass).map(lol => ({...lol, seat: lol.seat.charCodeAt()}));
 
+		let seatLettersFull = this.fillAlpha(seatLetters),
 		//sets width of container based on the length of the full alphabet slice array in combination with the width and margin of each seat's visual representation
-		let containWidth = seatLettersFull.length * (30 + 10);			
+		containWidth = seatLettersFull.length * (30 + 10),
+		finUnArray = [];		
 
 		//Here we are looping through our full alphabet array against the seat letters that should be missing then modding our full alphabet array in preparation for using it to create our top column letters section
 		for (let i = 0; i < seatLettersFull.length; i++){
@@ -97,13 +101,41 @@ class Seats extends Component {
 				);
 				
 			}			
-		});
+		});		
+		
+		//here we are looping through our array version that has unicode seats, comparing the unicode characters to determine how to build the array we'll be using to produce the seats and rows. The unicode is specifically to determine row placement
+		for(let i = 0; i < lolaUnicode.length; i++){//			
+			if(i < lolaUnicode.length -1) {//doing array length - 1 as the unicode logic expects to be able to compare the current array object property to the next and can't do so at the end of the array plus there are no rows at the end of the array
+				if((lolaUnicode[i + 1]["seat"] - lolaUnicode[i]["seat"]) > 1){//if we find where a row should be, add the array object to the new array then add a row object right after
+					finUnArray.push(lolaUnicode[i]);
 
-		const build = sarray.filter(lola => lola.class === cabinclass).map(lola => {			
-				return(
-					<div className="lolaSeats" key={lola.seat+lola.row} id={lola.seat+lola.row} data-color={(lola.occupied === true) ? "blue" : "grey"} onClick={this.seatSelect.bind(this, lola.seat+lola.row)} style={(lola.occupied === true) ? {backgroundColor: '#1b60e8'} : {backgroundColor: this.selectColor(lola.seat+lola.row)}}></div>
-				);			
-		});			
+					let obj = {
+					    "seat": "space",
+					    "row":  lolaUnicode[i]["row"],
+					    "class": lolaUnicode[i]["class"]+i,
+					    "occupied": false
+					};
+
+					finUnArray.push(obj);
+				}else{
+					finUnArray.push(lolaUnicode[i]);
+				}
+			}else{//push the final array object into the new array
+				finUnArray.push(lolaUnicode[i]);
+			}
+		}		
+
+		const build = finUnArray.map(lola => {	//we're now using our final array with row objects included to generate our visual interface			
+				if(lola.seat === "space"){
+					return(
+						<div className="lolaSeats" key={lola.seat+lola.row+lola.class}>{lola.row}</div>
+					);
+				}else{
+					return(
+						<div className="lolaSeats" key={String.fromCharCode(lola.seat)+lola.row} id={String.fromCharCode(lola.seat)+lola.row} data-color={(lola.occupied === true) ? "blue" : "grey"} onClick={this.seatSelect.bind(this, String.fromCharCode(lola.seat)+lola.row)} style={(lola.occupied === true) ? {backgroundColor: '#1b60e8'} : {backgroundColor: this.selectColor(String.fromCharCode(lola.seat)+lola.row)}}></div>
+					);	
+				}		
+		});	
 
 		return (
 			<React.Fragment>
