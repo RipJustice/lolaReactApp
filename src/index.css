@@ -23,6 +23,9 @@ code {
   height: 30px;
   margin: 5px;
   text-align: center;
+  cursor: default;  
+}
+.lolaSelect {
   cursor: pointer;
 }
 .lolaSeats[data-color=blue] {

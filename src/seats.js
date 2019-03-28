@@ -132,7 +132,7 @@ class Seats extends Component {
 					);
 				}else{
 					return(
-						<div className="lolaSeats" key={String.fromCharCode(lola.seat)+lola.row} id={String.fromCharCode(lola.seat)+lola.row} data-color={(lola.occupied === true) ? "blue" : "grey"} onClick={this.seatSelect.bind(this, String.fromCharCode(lola.seat)+lola.row)} style={(lola.occupied === true) ? {backgroundColor: '#1b60e8'} : {backgroundColor: this.selectColor(String.fromCharCode(lola.seat)+lola.row)}}></div>
+						<div className={(lola.occupied === true) ? "lolaSeats" : "lolaSeats lolaSelect"} key={String.fromCharCode(lola.seat)+lola.row} id={String.fromCharCode(lola.seat)+lola.row} data-color={(lola.occupied === true) ? "blue" : "grey"} onClick={this.seatSelect.bind(this, String.fromCharCode(lola.seat)+lola.row)} style={(lola.occupied === true) ? {backgroundColor: '#1b60e8'} : {backgroundColor: this.selectColor(String.fromCharCode(lola.seat)+lola.row)}}></div>
 					);	
 				}		
 		});	
